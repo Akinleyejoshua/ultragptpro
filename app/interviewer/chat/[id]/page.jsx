@@ -96,6 +96,8 @@ export default function InterviewChat() {
       setChat((prev) => [...prev, { msg: `Evaluation: ${data}` }]);
       handleState("loading", false);
       handleState("msg", "")
+      saveChat();
+      
     })
   }
 
@@ -109,7 +111,6 @@ export default function InterviewChat() {
       completed: true,
       msg: "Done Interviewing you, your session as ended!",
     });
-    saveChat();
     evaluate();
   }
 
