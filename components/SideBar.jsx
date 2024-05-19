@@ -76,7 +76,7 @@ export const SideBar = () => {
                         <div className="spin"></div>
                         :
                         history?.length === 0 ? <p className="red">No History</p> : history?.map((item, i) => {
-                            return <div className="item" key={i} id={item?._id}  onClick={() => dispatch(toggleSideBar(false))}>
+                            return <div title={item?.evaluation} className="item" key={i} id={item?._id}  onClick={() => dispatch(toggleSideBar(false))}>
                                 <h3>{i+1}</h3>
                                 <Space p={".3rem"}/>
                                 <div className="data">

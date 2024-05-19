@@ -72,8 +72,12 @@ export default function InterviewChat() {
   //   }
   // }, [history, filter])
 
-  const saveChat = () => {
-    saveChatsAPI({ history_id: id, chats: chat }).then(() => {
+  const saveChat = (data) => {
+    speak(data.replace("*", ""));
+    saveChatsAPI({
+      history_id: id, chats: [...chat, { msg: data }],
+      evaluation: data,
+    }).then(() => {
       dispatch(setChats(chat));
     })
   }
@@ -90,14 +94,14 @@ export default function InterviewChat() {
     handleState("msg", "Evaluating you");
 
     gptPrompt(`
-      evalute all my responses from 
-      the interview we just conducted
+      give a percentage by evaluating all my
+      previouse responses from here - "${JSON.stringify(chat)}"
+      and give reason for evaluation score.
     `).then((data) => {
       setChat((prev) => [...prev, { msg: `Evaluation: ${data}` }]);
       handleState("loading", false);
       handleState("msg", "")
-      saveChat();
-      
+      saveChat(`Evaluation: ${data}`);
     })
   }
 
@@ -362,7 +366,8 @@ export default function InterviewChat() {
                         {item?.msg && (
                           <div className="">
                             <div className="data">
-                              <Image src={Logo} alt="" />
+                              <Image src={Logo} alt="" className="male" />
+                              <Image src={Logo2} alt="" className="female" />
                               <Space p={".3rem"} />
                               <div className="col">
                                 <h4>Gemini</h4>
@@ -373,6 +378,8 @@ export default function InterviewChat() {
                             </div>
                           </div>
                         )}
+
+
                       </div>
                     );
                   })
