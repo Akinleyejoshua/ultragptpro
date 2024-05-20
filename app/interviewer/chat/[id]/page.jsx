@@ -33,7 +33,7 @@ export default function InterviewChat() {
   const prompt = useSelector((state) => state.prompt);
   const history = useSelector((state) => state.prompt.history);
   const interviewer = useSelector((state) => state.prompt.interviewer);
-  const cameraRef = useRef(0);
+  const cameraRef = useRef(null);
   const dispatch = useDispatch();
   const [next, setNext] = useState(0);
   const [chat, setChat] = useState([]);
@@ -92,7 +92,9 @@ export default function InterviewChat() {
   };
 
   const questions = interviewer.questions;
-  const filter = history?.filter((item) => item?._id == id)[0];
+  const filter = history?.filter((item) => item?.history?._id == id)[0]?.history;
+  console.log(filter)
+
   const question = questions[filter?.role_id]?.questions;
 
   const saveChat = (data) => {
