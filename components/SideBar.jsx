@@ -90,12 +90,10 @@ export const SideBar = () => {
           ) : history?.length === 0 ? (
             <p className="red">No History</p>
           ) : (
-            history?.map((items, i) => {
-                const item = items.history;
-                const evaluation = items?.evaluation;
+            history?.map((item, i) => {
               return (
                 <div
-                  title={`${evaluation}`}
+                  title={`${item?.evaluation}`}
                   className="item"
                   key={i}
                   id={item?._id}
