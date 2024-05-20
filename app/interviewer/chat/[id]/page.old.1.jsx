@@ -23,10 +23,6 @@ import {
   getChats as getChatsAPI,
   saveChats as saveChatsAPI,
 } from "@/services/chats";
-import "regenerator-runtime/runtime";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 
 export default function InterviewChat() {
   const { id } = useParams();
@@ -39,28 +35,9 @@ export default function InterviewChat() {
   const [chat, setChat] = useState([]);
   const [chatLoading, setChatLoading] = useState(true);
 
-  const commands = [
-    {
-      command: "reset",
-      callback: () => resetTranscript(),
-    },
-  ];
+  const recognition = speechToText();
 
-  const {
-    transcript,
-    interimTranscript,
-    finalTranscript,
-    resetTranscript,
-    listening,
-  } = useSpeechRecognition({ commands });
-
-  
   useEffect(() => {
-    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
-      alert("Browser has no Support for Speech Recognition. use Google Chrome");
-    }
-
-    
     const cam = cameraRef.current;
     navigator.mediaDevices
       .getUserMedia({
@@ -69,7 +46,7 @@ export default function InterviewChat() {
       })
       .then((stream) => {
         cam.srcObject = stream;
-        // cam?.play();
+        cam?.play();
         return stream;
       });
   }, []);
@@ -96,7 +73,7 @@ export default function InterviewChat() {
   const question = questions[filter?.role_id]?.questions;
 
   const saveChat = (data) => {
-    speak(data.replace(/\*/g, ''));
+    speak(data.replace("*", "").replace("**", "").replace(":**", ""));
     saveChatsAPI({
       history_id: id,
       chats: [...chat, { msg: data }],
@@ -140,14 +117,10 @@ export default function InterviewChat() {
     `).then((data) => {
       if (data == undefined)
         return (
-          handleState(
-            "msg",
-            <div>
-              Poor internet Connection
-              <Space p={".3rem"} />
-              <button onClick={evaluate}>Re-Evaluate</button>
-            </div>
-          ),
+          handleState("msg", <div>Poor internet Connection
+            <Space p={".3rem"}/>
+            <button onClick={evaluate}>Re-Evaluate</button>
+          </div>),
           handleState("loading", false)
         );
       setChat((prev) => [...prev, { msg: `Evaluation: ${data}` }]);
@@ -221,9 +194,7 @@ export default function InterviewChat() {
   };
 
   const startListening = () => {
-    SpeechRecognition.startListening({
-      continuous: true,
-    });
+    recognition.start();
     setState({
       ...state,
       speaking: false,
@@ -232,30 +203,37 @@ export default function InterviewChat() {
       loading: true,
     });
   };
+  const [transcription, setTranscription] = useState("");
 
-  const analyseTranscript = async () => {
-    if (transcript === "") {
+  recognition.onresult = async (e) => {
+    const transcript = e.results[0][0].transcript || "";
+    setTranscription(transcript);
+    recognition.stop();
+
+    if (transcript == "" || transcript == undefined || transcript == null) {
       handleState("loading", false);
       handleState("msg", "Speak again didnt get you!");
     } else {
       setChat((prev) => [...prev, { answer: transcript }]);
+      setTranscription(transcript);
+
       handleState("loading", true);
       handleState("msg", "Thinking...");
 
       const text = await gptPrompt(`
-                Intervew Role="${filter?.role}"
-                Candidate Name="${filter?.name}"
-                Candidate Response="${transcript}"
-                If you are interviewing me as a recruiter
-                for an organization, give me your response
-                as a recruiter based on the Candidate(me) Response
-                Dont forget to keep it brief and short with your questions.
-              `);
+      if you are interviewing me now and want 
+      to recruite me for this ${filter?.role} 
+      role, remember no matter what i
+      say you are the one interviewing
+      reply me concerning this="${transcript}".
+      but please keep your reply breif with your 
+      questions too and my name is ${filter?.name}.
+    `);
 
       handleState("loading", false);
 
-      if (text != "" || text !== undefined || text != null) {
-        speak(text.replace(/\*/g, ''));
+      if (text != "") {
+        speak(text.replace("*", "").replace("**", "").replace(":**", ""));
         handleState("msg", "Speaking...");
         setChat((prev) => [...prev, { msg: text }]);
       } else {
@@ -264,20 +242,21 @@ export default function InterviewChat() {
     }
   };
 
-  useEffect(() => {
-    if (!listening && state.started) {
-      analyseTranscript();
-    }
-  }, [listening, transcript])
-
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
+  recognition.onend = async (e) => {
     setState({
       ...state,
       listening: false,
       speaking: true,
       loading: false,
     });
+
+    if (!navigator.onLine) {
+      handleState("msg", "Speak again, Poor network connection");
+    }
+  };
+
+  const stopListening = () => {
+    recognition.stop();
   };
 
   useEffect(() => {
@@ -331,13 +310,14 @@ export default function InterviewChat() {
                     </button>
                   )}
 
-                  {state.started && !state.speaking && (
+                  {/* {
+                    (state.started && !state.speaking) &&
                     <button onClick={stopListening}>
                       Done Speaking
                       <Space p={".3rem"} />
                       <CiMicrophoneOff className="red" />
                     </button>
-                  )}
+                  } */}
 
                   {state.started && !state.loading && state.speaking && (
                     <button onClick={nextQuestion}>

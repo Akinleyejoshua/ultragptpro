@@ -74,7 +74,8 @@ export default function Interviewer() {
             and ones you are done with speaking be silent for a while or press <b>"done speaking"</b>.
             If in Doubt about a question Gemini asks you press 
             the <b>"Next"</b> button to proceed to the next question.
-            Make sure you speak carefully and audibly!. Good Luck!!!
+            Make sure you speak carefully and audibly!. Make sure you have been evaluated
+            before you leave the session, the HR team will review your evaluation. Good Luck!!!
           </p>
           <Space p={"1rem"} />
           <small>Your Role?</small>
