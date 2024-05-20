@@ -105,7 +105,6 @@ export default function InterviewChat() {
   const evaluate = async () => {
     handleState("loading", true);
     handleState("msg", "Evaluating you");
-    alert(convoText);
 
     gptPrompt(`
       analyse and evaluate this ="${convoText} using show analysed reasons
@@ -231,8 +230,8 @@ export default function InterviewChat() {
       to recruite me for this ${filter?.role} 
       role, remember no matter what i
       say you are the one interviewing
-      reply concerning this - "${transcript}".
-      but please key your reply breif with 
+      reply me concerning this - "${transcript}".
+      but please key your reply breif with your 
       questions too'
     `);
 
