@@ -52,7 +52,7 @@ export const SideBar = () => {
     }
 
 
-    return <section className={`${prompt?.components?.sidebar ? "sidebar open": "sidebar"}`}>
+    return <section className={`${prompt?.components?.sidebar ? "sidebar open" : "sidebar"}`}>
         {confirm.open === true && <Confirm msg={confirm.msg} onNo={() => setConfirm({ open: false })}
             onYes={confirmAction}
         />}
@@ -76,21 +76,25 @@ export const SideBar = () => {
                         <div className="spin"></div>
                         :
                         history?.length === 0 ? <p className="red">No History</p> : history?.map((item, i) => {
-                            return <div title={item?.evaluation} className="item" key={i} id={item?._id}  onClick={() => dispatch(toggleSideBar(false))}>
-                                <h3>{i+1}</h3>
-                                <Space p={".3rem"}/>
+                            return <div title={item?.evaluation} className="item" key={i} id={item?._id}>
+
+                                <h3>{i + 1}</h3>
+                                <Space p={".3rem"} />
                                 <div className="data">
-                                <p onClick={() => router.push(`${item?.path}/chat/${item?._id}`)} className="dim">{item?.title}</p>
-                                <Space p={".3rem"}/>
-                                <AiOutlineDelete className="icon red" onClick={() => setConfirm({
-                                    ...confirm,
-                                    open: true,
-                                    id: item?._id,
-                                    msg: "Delete the chat?",
-                                    action: "del"
-                                })} />
+                                    <p onClick={() => {
+                                        dispatch(toggleSideBar(false));
+                                        router.push(`${item?.path}/chat/${item?._id}`);
+                                    }} className="dim">{item?.title}</p>
+                                    <Space p={".3rem"} />
+                                    <AiOutlineDelete className="icon red" onClick={() => setConfirm({
+                                        ...confirm,
+                                        open: true,
+                                        id: item?._id,
+                                        msg: "Delete the chat?",
+                                        action: "del"
+                                    })} />
                                 </div>
-                                
+
 
                             </div>
                         })
@@ -102,7 +106,7 @@ export const SideBar = () => {
         </div>
 
         <div className="bottom">
-            <div className="row"  onClick={() => dispatch(toggleSideBar(false))}>
+            <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
                 <AiOutlineClear className="icon blue" onClick={() => {
                     delHistory({ all: true }).then(() => {
                         dispatch(clearHistory())
