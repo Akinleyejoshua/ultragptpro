@@ -214,13 +214,15 @@ export default function InterviewChat() {
   recognition.onresult = async (e) => {
     const transcript = e.results[0][0].transcript || "";
     recognition.stop();
-    setChat((prev) => [...prev, { answer: transcript }]);
-    setTranscription(transcript)
+
 
     if (transcript == "") {
       handleState("loading", false);
       handleState("msg", "Speak again didnt get you!")
     } else {
+      setChat((prev) => [...prev, { answer: transcript }]);
+      setTranscription(transcript)
+
       handleState("loading", true);
       handleState("msg", "Thinking...");
 
@@ -257,7 +259,7 @@ export default function InterviewChat() {
       speaking: true,
       loading: false,
     });
-    if (!navigator.onLine){
+    if (!navigator.onLine) {
       handleState("msg", "Speak again, Poor network connection")
     }
 
@@ -312,7 +314,7 @@ export default function InterviewChat() {
                   {(!state.started && filter !== undefined && !chatLoading)
                     &&
                     <button onClick={start}>
-                      {chat.length !== 0 ? "Redo": "Start"}
+                      {chat.length !== 0 ? "Redo" : "Start"}
                       <Space p={".3rem"} />
                       <AiOutlinePlayCircle />
                     </button>
