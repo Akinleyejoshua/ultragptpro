@@ -40,10 +40,10 @@ export default function InterviewChat() {
   const [chatLoading, setChatLoading] = useState(true);
 
   const commands = [
-    {
-      command: "reset",
-      callback: () => resetTranscript(),
-    },
+    // {
+    //   command: "reset",
+    //   callback: () => resetTranscript(),
+    // },
   ];
 
   const {
@@ -98,7 +98,6 @@ export default function InterviewChat() {
 
   const questions = interviewer.questions;
   const filter = history?.filter((item) => item?._id == id)[0];
-  console.log(filter)
 
   const question = questions[filter?.role_id]?.questions;
 
@@ -241,18 +240,20 @@ export default function InterviewChat() {
   };
 
   const analyseTranscript = async () => {
-    if (transcript === "") {
+    alert(finalTranscript);
+    if (finalTranscript === "") {
       handleState("loading", false);
-      handleState("msg", "Speak again didnt get you!");
+      handleState("msg", "Speak again, Didn't get you due to Poor network connection");
+      // handleState("msg", "Speak again, Didn't get you due to Poor network connection");
     } else {
-      setChat((prev) => [...prev, { answer: transcript }]);
+      setChat((prev) => [...prev, { answer: finalTranscript }]);
       handleState("loading", true);
       handleState("msg", "Thinking...");
 
       const text = await gptPrompt(`
                 Intervew Role="${filter?.role}"
                 Candidate Name="${filter?.name}"
-                Candidate Response="${transcript}"
+                Candidate Response="${finalTranscript}"
                 If you are interviewing me as a recruiter
                 for an organization, give me your response
                 as a recruiter based on the Candidate(me) Response
@@ -265,6 +266,7 @@ export default function InterviewChat() {
         speak(text.replace(/\*/g, ''));
         handleState("msg", "Speaking...");
         setChat((prev) => [...prev, { msg: text }]);
+        resetTranscript();
       } else {
         handleState("msg", "Speak again didnt get you!");
       }
@@ -275,7 +277,7 @@ export default function InterviewChat() {
     if (!listening && state.started) {
       analyseTranscript();
     }
-  }, [listening, transcript])
+  }, [listening])
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
