@@ -111,8 +111,7 @@ export default function InterviewChat() {
       for evaluation.
       from the context above, it contains both 'question:' and 'response:'
       but if there are no 'response' in the 
-      context above then evalute to 0%, please let your text 
-      format be clear avoid the use of '*'
+      context above then evalute to 0%.
     `).then((data) => {
       if (data == undefined) return (
         handleState("msg", "Poor Network connection"),
