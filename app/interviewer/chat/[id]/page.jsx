@@ -73,7 +73,7 @@ export default function InterviewChat() {
   const question = questions[filter?.role_id]?.questions;
 
   const saveChat = (data) => {
-    speak(data.replace("*", "").replace("**", ""));
+    speak(data.replace("*", "").replace("**", "").replace(":**", ""));
     saveChatsAPI({
       history_id: id,
       chats: [...chat, { msg: data }],
@@ -234,7 +234,7 @@ export default function InterviewChat() {
       handleState("loading", false);
 
       if (text != "") {
-        speak(text.replace("*", "").replace("**", ""));
+        speak(text.replace("*", "").replace("**", "").replace(":**", ""));
         handleState("msg", "Speaking...");
         setChat((prev) => [...prev, { msg: text }]);
       } else {
