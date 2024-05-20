@@ -61,8 +61,7 @@ export default function Interviewer() {
             In this practive interview questions, you will be interviwed by an
             A.I recruiter, who will ask you questions based on your role and
             will evaluate your performance and send to the real recruiting team
-            for review. Gemini is your A.I interviewer, He's friendly and good at
-            what he does, you have to feel confortable speaking to him.
+            for review. Gemini is your Virtual A.I interviewer.
           </p>
 
           <Space p={"1rem"} />
@@ -71,8 +70,8 @@ export default function Interviewer() {
             press <b>"start"</b> to begin the session. there is a chat
             tab where your dialog is being displayed.
             press <b>"speak"</b> to begin recording your own personal speech when
-            you want to talk
-            and ones you are done with speaking press <b>"done speaking"</b>.
+            it's time for you to answer or reply
+            and ones you are done with speaking be silent for a while or press <b>"done speaking"</b>.
             If in Doubt about a question Gemini asks you press 
             the <b>"Next"</b> button to proceed to the next question.
             Make sure you speak carefully and audibly!. Good Luck!!!
