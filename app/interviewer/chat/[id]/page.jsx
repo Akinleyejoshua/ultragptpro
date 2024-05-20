@@ -27,6 +27,7 @@ export default function InterviewChat() {
   const dispatch = useDispatch();
   const [next, setNext] = useState(0);
   const [chat, setChat] = useState([]);
+  const [chatLoading, setChatLoading] = useState(true)
 
   const recognition = speechToText();
 
@@ -86,18 +87,37 @@ export default function InterviewChat() {
     getChatsAPI({ history_id: id }).then(res => {
       dispatch(setChats(res.data?.chats || []));
       setChat(prev => (res.data?.chats || []));
+      setChatLoading(false);
     })
   }
+
+  const [convoText, setConvoText] = useState("")
+
+  const processTranscript = () => {
+    chat.forEach((item) => {
+      if (item?.question) setConvoText(prev => (prev + `question: ${item?.question}.`))
+      if (item?.msg) setConvoText(prev => (prev + `question: ${item?.msg}.`))
+      if (item?.answer) setConvoText(prev => (prev + `response: ${item?.answer}.`))
+    });
+  }
+
 
   const evaluate = async () => {
     handleState("loading", true);
     handleState("msg", "Evaluating you");
+    alert(convoText);
 
     gptPrompt(`
-      give a percentage by evaluating all my
-      previouse responses from here - "${JSON.stringify(chat)}"
-      and give reason for evaluation score.
+      analyse and evaluate this ="${convoText} using show analysed reasons
+      for evaluation.
+      from the context above, it contains both 'question:' and 'response:'
+      but if there are no 'response' in the 
+      context above then evalute to 0%
     `).then((data) => {
+      if (data == undefined) return (
+        handleState("msg", "Poor Network connection"),
+        handleState("loading", false)
+      )
       setChat((prev) => [...prev, { msg: `Evaluation: ${data}` }]);
       handleState("loading", false);
       handleState("msg", "")
@@ -125,10 +145,11 @@ export default function InterviewChat() {
         started: true,
         listening: false,
         speaking: true,
-        msg: "Gemini is/was Speaking...",
+        msg: "Speaking...",
       });
       setNext(0);
-      setChat((prev) => ([]));
+      setConvoText("");
+      setChat([]);
 
       const intro = `So ${filter?.name}, my name is Gemini
        and am your ${filter?.role}recruiter
@@ -155,7 +176,7 @@ export default function InterviewChat() {
           started: true,
           listening: false,
           speaking: true,
-          msg: "Gemini is/was Speaking...",
+          msg: "Speaking...",
           loading: false,
 
         });
@@ -164,12 +185,14 @@ export default function InterviewChat() {
           ...prev,
           { question: question[next + 1] },
         ]);
+        processTranscript();
 
       }
 
     }
 
     if (next === question?.length - 1) {
+
       stop();
     }
   };
@@ -180,50 +203,62 @@ export default function InterviewChat() {
       ...state,
       speaking: false,
       listening: true,
-      msg: "Gemini is/was Listening to you...",
+      msg: "Listening...",
       loading: true,
     });
 
   };
-  recognition.onresult = async (e) => {
-    const transcript = e.results[0][0].transcript;
-    setChat((prev) => [...prev, { answer: transcript }]);
+  const [transcription, setTranscription] = useState("")
 
-    handleState("loading", true);
-    handleState("msg", "Thinking...");
+  recognition.onresult = async (e) => {
+    const transcript = e.results[0][0].transcript || "";
+    setChat((prev) => [...prev, { answer: transcript }]);
+    setTranscription(transcript)
     recognition.stop();
 
-    gptPrompt(`
+    if (transcript == "") {
+      handleState("loading", false);
+      handleState("msg", "Speak again didnt get you!")
+    } else {
+      handleState("loading", true);
+      handleState("msg", "Thinking...");
+
+      const text = await gptPrompt(`
       if you are interviewing me now and want 
       to recruite me for this ${filter?.role} 
       role, remember no matter what i
       say you are the one interviewing
-      (provided my name is ${filter?.name}) So
+      provided your name is Gemini and Candidate is ${filter?.name} So
       reply concerning this - "${transcript}".
-      but please key your reply breif with questions too'
-    `).then(data => {
+      but please key your reply breif with 
+      questions too'
+    `);
 
-      setChat((prev) => [...prev, { msg: data }]);
       handleState("loading", false);
-      handleState("msg", "Gemini is/was speaking")
-      speak(data.replace("*", ""))
-    })
+
+      if (text != "") {
+        speak(text)
+        handleState("msg", "Speaking...")
+        setChat((prev) => [...prev, { msg: text }]);
+      } else {
+        handleState("msg", "Speak again didnt get you!")
+      }
+    }
+
+
 
   }
 
-  recognition.onend = (e) => {
+  recognition.onend = async (e) => {
+    // console.log(e);
     setState({
       ...state,
       listening: false,
       speaking: true,
       loading: false,
     });
+
   }
-
-  // useEffect(() => {
-
-
-  // }, [])
 
 
 
@@ -258,7 +293,7 @@ export default function InterviewChat() {
           <h1 className="title">{filter?.title}</h1>
         } />
         <main>
-          <Space p={".3rem"} />
+          <Space p={"1rem"} />
 
           <div className="row">
             <div className="video">
@@ -271,10 +306,10 @@ export default function InterviewChat() {
                 <video controls={false} ref={cameraRef} autoPlay={true}></video>
                 <div className="controls">
 
-                  {(!state.started && filter !== undefined)
+                  {(!state.started && filter !== undefined && !chatLoading)
                     &&
                     <button onClick={start}>
-                      Start
+                      {chat.length !== 0 ? "Redo": "Start"}
                       <Space p={".3rem"} />
                       <AiOutlinePlayCircle />
                     </button>
@@ -289,14 +324,14 @@ export default function InterviewChat() {
                     </button>
                   }
 
-                  {
+                  {/* {
                     (state.started && !state.speaking) &&
                     <button onClick={stopListening}>
                       Done Speaking
                       <Space p={".3rem"} />
                       <CiMicrophoneOff className="red" />
                     </button>
-                  }
+                  } */}
 
                   {
                     (state.started && !state.loading && state.speaking) &&
@@ -329,61 +364,66 @@ export default function InterviewChat() {
               </div>
               <Space p={".3rem"} />
               <div className="chat-history">
-                {chat?.length === 0 ? (
-                  <small className="red">No Chat History</small>
-                ) : (
-                  chat?.map((item, i) => {
-                    return (
-                      <div key={i} className="chat-bar">
-                        {item?.question && (
-                          <div className="question">
-                            <div className="data">
-                              <Image src={Logo} alt="" className="male" />
-                              <Image src={Logo2} alt="" className="female" />
-                              <Space p={".3rem"} />
-                              <div className="col">
-                                <h4>Gemini</h4>
-                                <div className="text">
-                                  <small>{item?.question}</small>
+                {chatLoading ? <div className="spin"></div>
+                  :
+                  chat?.length === 0 ? (
+
+                    <small className="red">No Chat History</small>
+                  ) : (
+                    chat?.map((item, i) => {
+                      return (
+                        <div key={i} className="chat-bar">
+                          {item?.question && (
+                            <div className="question">
+                              <div className="data">
+                                <Image src={Logo} alt="" className="male" />
+                                <Image src={Logo2} alt="" className="female" />
+                                <Space p={".3rem"} />
+                                <div className="col">
+                                  <h4>Gemini</h4>
+                                  <div className="text">
+                                    <small>{item?.question}</small>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          )}
+
+                          {item?.answer && (
+                            <div className="answer">
+                              <div className="data">
+                                <h4 className="blue">{filter?.name}</h4>
+                              </div>
+                              <div className="text">
+                                <small>{item?.answer}</small>
+                              </div>
+                            </div>
+                          )}
+
+                          {item?.msg && (
+                            <div className="">
+                              <div className="data">
+                                <Image src={Logo} alt="" className="male" />
+                                <Image src={Logo2} alt="" className="female" />
+                                <Space p={".3rem"} />
+                                <div className="col">
+                                  <h4>Gemini</h4>
+                                  <div className="text">
+                                    <small>{item?.msg}</small>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-
-                          </div>
-                        )}
-
-                        {item?.answer && (
-                          <div className="answer">
-                            <div className="data">
-                              <h4 className="blue">{filter?.name}</h4>
-                            </div>
-                            <div className="text">
-                              <small>{item?.answer}</small>
-                            </div>
-                          </div>
-                        )}
-
-                        {item?.msg && (
-                          <div className="">
-                            <div className="data">
-                              <Image src={Logo} alt="" className="male" />
-                              <Image src={Logo2} alt="" className="female" />
-                              <Space p={".3rem"} />
-                              <div className="col">
-                                <h4>Gemini</h4>
-                                <div className="text">
-                                  <small>{item?.msg}</small>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                          )}
 
 
-                      </div>
-                    );
-                  })
-                )}
+                        </div>
+                      );
+                    })
+                  )
+                }
+
               </div>
 
             </div>
