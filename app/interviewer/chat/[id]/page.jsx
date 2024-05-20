@@ -97,7 +97,7 @@ export default function InterviewChat() {
   };
 
   const questions = interviewer.questions;
-  const filter = history?.filter((item) => item?.history?._id == id)[0]?.history;
+  const filter = history?.filter((item) => item?._id == id)[0];
   console.log(filter)
 
   const question = questions[filter?.role_id]?.questions;
