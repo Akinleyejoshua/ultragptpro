@@ -71,7 +71,9 @@ export default function InterviewChat() {
         cam.srcObject = stream;
         // cam?.play();
         return stream;
-      });
+      }).catch((err) => {
+        alert(err)
+      })
   }, []);
 
   const [state, setState] = useState({
