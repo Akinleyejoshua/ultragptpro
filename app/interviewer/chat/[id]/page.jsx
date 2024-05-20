@@ -72,9 +72,11 @@ export default function InterviewChat() {
         // cam?.play();
         return stream;
       }).catch((err) => {
-        alert(err)
+        alert(`Failed to load Camera. Hint: Check if Another 
+        app is using your camera or check for camera input or
+        enable camera permission`)
       })
-  }, []);
+  }, [id]);
 
   const [state, setState] = useState({
     started: false,
