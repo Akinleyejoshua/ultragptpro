@@ -112,7 +112,8 @@ export default function InterviewChat() {
       for evaluation.
       from the context above, it contains both 'question:' and 'response:'
       but if there are no 'response' in the 
-      context above then evalute to 0%
+      context above then evalute to 0%, please let your text 
+      format be clear avoid the use of '*'
     `).then((data) => {
       if (data == undefined) return (
         handleState("msg", "Poor Network connection"),
@@ -212,9 +213,9 @@ export default function InterviewChat() {
 
   recognition.onresult = async (e) => {
     const transcript = e.results[0][0].transcript || "";
+    recognition.stop();
     setChat((prev) => [...prev, { answer: transcript }]);
     setTranscription(transcript)
-    recognition.stop();
 
     if (transcript == "") {
       handleState("loading", false);
@@ -228,7 +229,6 @@ export default function InterviewChat() {
       to recruite me for this ${filter?.role} 
       role, remember no matter what i
       say you are the one interviewing
-      provided your name is Gemini and Candidate is ${filter?.name} So
       reply concerning this - "${transcript}".
       but please key your reply breif with 
       questions too'
@@ -257,6 +257,9 @@ export default function InterviewChat() {
       speaking: true,
       loading: false,
     });
+    if (!navigator.onLine){
+      handleState("msg", "Speak again, Poor network connection")
+    }
 
   }
 
