@@ -240,7 +240,6 @@ export default function InterviewChat() {
   };
 
   const analyseTranscript = async () => {
-    alert(finalTranscript);
     if (finalTranscript === "") {
       handleState("loading", false);
       handleState("msg", "Speak again, Didn't get you due to Poor network connection");
