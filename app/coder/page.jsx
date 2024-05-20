@@ -14,9 +14,9 @@ export default function Coder() {
     <div className="body">
       <SideBar />
       <div className="main">
-        <Header />
+        <Header section={"Coder"}/>
         <main>
-          
+          <h1>Coming Soon!!!</h1>
         </main>
       </div>
 

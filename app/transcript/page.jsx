@@ -7,14 +7,14 @@ import Logo from "@/src/img/logo.jpg"
 import { Space } from "@/components/Space";
 import { useRouter } from "next/navigation";
 
-export default function Captioner() {
+export default function Transcriber() {
   const router = useRouter();
 
   return (
     <div className="body">
       <SideBar />
       <div className="main">
-        <Header section={"Media Captioner"}/>
+        <Header section={"Transcriber"}/>
         <main>
           <h1>Coming Soon!!!</h1>
         </main>
