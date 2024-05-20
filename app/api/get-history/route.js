@@ -11,8 +11,11 @@ export async function POST(req) {
     const chats = await Chats.find({ history_id: histories[0]._id }).lean();
     const data = [];
 
-    histories.forEach((history, i) => {
-      data.push({ history, evaluation: chats[i]?.evaluation });
+    histories.forEach((item, i) => {
+      data.push({
+        ...item,
+        evaluation: chats[i]?.evaluation 
+      });
     });
 
     return new NextResponse(
