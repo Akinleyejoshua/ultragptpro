@@ -68,7 +68,7 @@ export default function Interviewer() {
           <h2>How to use?</h2>
           <p>Once the page loads, enable camera and mic,
             press <b>"start"</b> to begin the session. there is a chat
-            tab where your dialog is being displayed.
+            tab where your dialogue is being displayed.
             press <b>"speak"</b> to begin recording your own personal speech when
             it's time for you to answer or reply
             and ones you are done with speaking be silent for a while or press <b>"done speaking"</b>.
