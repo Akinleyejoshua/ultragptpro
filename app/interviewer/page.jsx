@@ -70,7 +70,8 @@ export default function Interviewer() {
             press <b>"start"</b> to begin the session. there is a chat
             tab where your dialogue is being displayed.
             press <b>"speak"</b> to begin recording your own personal speech when
-            it's time for you to answer or reply
+            it's time for you to answer or reply (if your spoke and no text was generated due to
+            poor internet connection press it and speak again until it works)
             and ones you are done with speaking be silent for a while or press <b>"done speaking"</b>.
             If in Doubt about a question Gemini asks you press 
             the <b>"Next"</b> button to proceed to the next question.
