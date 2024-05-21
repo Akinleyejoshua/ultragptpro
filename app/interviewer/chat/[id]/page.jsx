@@ -319,7 +319,7 @@ export default function InterviewChat() {
     if (!listening && state.started && transcript != "") {
       analyseTranscript();
     }
-  }, [listening])
+  }, [finalTranscript])
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
