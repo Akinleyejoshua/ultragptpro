@@ -46,14 +46,8 @@ export default function InterviewChat() {
     // },
   ];
 
-
-  const {
-    transcript,
-    finalTranscript,
-    resetTranscript,
-    listening,
-  } = useSpeechRecognition({ commands });
-
+  const { transcript, finalTranscript, resetTranscript, listening } =
+    useSpeechRecognition({ commands });
 
   useEffect(() => {
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
@@ -71,12 +65,13 @@ export default function InterviewChat() {
         cam.srcObject = stream;
         // cam?.play();
         return stream;
-      }).catch((err) => {
+      })
+      .catch((err) => {
         alert(`
         Failed to load Camera. Hint: Check if Another 
         app is using your camera or check for camera input or
-        enable camera permission`)
-      })
+        enable camera permission`);
+      });
   }, [id]);
 
   const [state, setState] = useState({
@@ -102,7 +97,7 @@ export default function InterviewChat() {
   const question = questions[filter?.role_id]?.questions;
 
   const saveChat = (data) => {
-    speak(data).then(data => {
+    speak(data).then((data) => {
       data.onend = () => {
         setState({
           ...state,
@@ -112,7 +107,7 @@ export default function InterviewChat() {
           msg: "",
           loading: false,
         });
-      }
+      };
     });
     saveChatsAPI({
       history_id: id,
@@ -209,7 +204,7 @@ export default function InterviewChat() {
       `;
       setChat((prev) => [...prev, { question: intro }]);
 
-      speak(intro + question[next]).then(data => {
+      speak(intro + question[next]).then((data) => {
         data.onend = () => {
           setState({
             ...state,
@@ -219,8 +214,8 @@ export default function InterviewChat() {
             msg: "",
             loading: false,
           });
-        }
-      })
+        };
+      });
 
       setChat((prev) => [...prev, { question: question[next] }]);
     }
@@ -238,7 +233,7 @@ export default function InterviewChat() {
           msg: "Speaking...",
           loading: false,
         });
-        speak(question[next + 1]).then(data => {
+        speak(question[next + 1]).then((data) => {
           data.onend = () => {
             setState({
               ...state,
@@ -248,7 +243,7 @@ export default function InterviewChat() {
               msg: "",
               loading: false,
             });
-          }
+          };
         });
         setChat((prev) => [...prev, { question: question[next + 1] }]);
         processTranscript();
@@ -275,7 +270,10 @@ export default function InterviewChat() {
 
   const analyseTranscript = async () => {
     if (finalTranscript == "" && !state.listening) {
-      handleState("msg", "Speak again, Didn't get you due to Poor network connection");
+      handleState(
+        "msg",
+        "Speak again, Didn't get you due to Poor network connection"
+      );
     } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
       handleState("loading", true);
@@ -294,40 +292,30 @@ export default function InterviewChat() {
                 `);
 
       handleState("loading", false);
+      handleState("msg", "Speaking...");
+      handleState("speaking", true);
+      handleState("listening", false);
 
-      if (text != "" || text !== undefined || text != null) {
-        handleState("msg", "Speaking...");
-        handleState("speaking", true);
-        handleState("listening", false);
-
-        speak(text).then(data => {
-          data.onend = () => {
-            setState({
-              ...state,
-              started: true,
-              listening: false,
-              speaking: false,
-              msg: "",
-              loading: false,
-            });
-          }
-        });
-        setChat((prev) => [...prev, { msg: text }]);
-        resetTranscript();
-      } else {
-        handleState("msg", "Speak again didnt get you!");
-      }
+      speak(text).then((data) => {
+        data.onend = () => {
+          setState({
+            ...state,
+            speaking: false,
+            msg: "",
+          });
+        };
+      });
+      setChat((prev) => [...prev, { msg: text }]);
+      resetTranscript();
     }
-
-
   };
 
   useEffect(() => {
-    if (finalTranscript !== "" && state.started && !listening) {
+    console.log(finalTranscript)
+    if (!state.listening && finalTranscript !== "" && state.started) {
       analyseTranscript();
     }
-  }, [listening])
-
+  }, [finalTranscript, state.listening])
 
   const stopListening = async () => {
     await SpeechRecognition.stopListening();
