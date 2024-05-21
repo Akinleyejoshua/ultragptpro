@@ -277,6 +277,8 @@ export default function InterviewChat() {
     if (finalTranscript === "") {
       handleState("loading", false);
       handleState("msg", "Speak again, Didn't get you due to Poor network connection");
+      resetTranscript();
+
     } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
       handleState("loading", true);
