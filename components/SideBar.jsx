@@ -33,7 +33,7 @@ export const SideBar = () => {
   const history = useSelector((state) => state.prompt.history);
 
   useEffect(() => {
-    if (history.length === 0) {
+    if (history) {
       dispatch(setLoader(true));
       getHistoryAPI({
         all: true,
