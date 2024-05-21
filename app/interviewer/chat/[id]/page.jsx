@@ -316,7 +316,7 @@ export default function InterviewChat() {
   };
 
   useEffect(() => {
-    if (!listening && state.started && transcript != "") {
+    if (!listening && state.started && finalTranscript != "") {
       analyseTranscript();
     }
   }, [finalTranscript])
