@@ -260,8 +260,8 @@ export default function InterviewChat() {
     }
   };
 
-  const startListening = () => {
-    SpeechRecognition.startListening({
+  const startListening = async () => {
+    await SpeechRecognition.startListening({
       continuous: true,
     });
     setState({
@@ -323,19 +323,18 @@ export default function InterviewChat() {
   };
 
   useEffect(() => {
-    if (!listening && state.started && finalTranscript != "") {
+    console.log(finalTranscript)
+    if (finalTranscript !== "" && state.started && !listening) {
       analyseTranscript();
-    } else {
-      resetTranscript();
     }
-  }, [finalTranscript])
+  }, [listening])
 
 
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
+  const stopListening = async () => {
+    await SpeechRecognition.stopListening();
     handleState("loading", false);
     handleState("listening", false);
-    handleState("msg", "");
+    // handleState("msg", "");
   };
 
   useEffect(() => {
