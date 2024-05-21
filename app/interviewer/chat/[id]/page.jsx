@@ -46,21 +46,20 @@ export default function InterviewChat() {
     // },
   ];
 
+
   const {
-    transcript,
-    interimTranscript,
     finalTranscript,
     resetTranscript,
     listening,
   } = useSpeechRecognition({ commands });
 
-  
+
   useEffect(() => {
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
       alert("Browser has no Support for Speech Recognition. use Google Chrome");
     }
 
-    
+
     const cam = cameraRef.current;
     navigator.mediaDevices
       .getUserMedia({
@@ -102,7 +101,18 @@ export default function InterviewChat() {
   const question = questions[filter?.role_id]?.questions;
 
   const saveChat = (data) => {
-    speak(data.replace(/\*/g, ''));
+    speak(data).then(data => {
+      data.onend = () => {
+        setState({
+          ...state,
+          started: true,
+          listening: false,
+          speaking: false,
+          msg: "",
+          loading: false,
+        });
+      }
+    });
     saveChatsAPI({
       history_id: id,
       chats: [...chat, { msg: data }],
@@ -197,7 +207,18 @@ export default function InterviewChat() {
       `;
       setChat((prev) => [...prev, { question: intro }]);
 
-      speak(intro + question[next]);
+      speak(intro + question[next]).then(data => {
+        data.onend = () => {
+          setState({
+            ...state,
+            started: true,
+            listening: false,
+            speaking: false,
+            msg: "",
+            loading: false,
+          });
+        }
+      })
 
       setChat((prev) => [...prev, { question: question[next] }]);
     }
@@ -215,7 +236,18 @@ export default function InterviewChat() {
           msg: "Speaking...",
           loading: false,
         });
-        speak(question[next + 1]);
+        speak(question[next + 1]).then(data => {
+          data.onend = () => {
+            setState({
+              ...state,
+              started: true,
+              listening: false,
+              speaking: false,
+              msg: "",
+              loading: false,
+            });
+          }
+        });
         setChat((prev) => [...prev, { question: question[next + 1] }]);
         processTranscript();
       }
@@ -240,10 +272,10 @@ export default function InterviewChat() {
   };
 
   const analyseTranscript = async () => {
+
     if (finalTranscript === "") {
       handleState("loading", false);
       handleState("msg", "Speak again, Didn't get you due to Poor network connection");
-      // handleState("msg", "Speak again, Didn't get you due to Poor network connection");
     } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
       handleState("loading", true);
@@ -262,8 +294,22 @@ export default function InterviewChat() {
       handleState("loading", false);
 
       if (text != "" || text !== undefined || text != null) {
-        speak(text.replace(/\*/g, ''));
         handleState("msg", "Speaking...");
+        handleState("speaking", true);
+        handleState("listening", false);
+
+        speak(text).then(data => {
+          data.onend = () => {
+            setState({
+              ...state,
+              started: true,
+              listening: false,
+              speaking: false,
+              msg: "",
+              loading: false,
+            });
+          }
+        });
         setChat((prev) => [...prev, { msg: text }]);
         resetTranscript();
       } else {
@@ -280,12 +326,9 @@ export default function InterviewChat() {
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
-    setState({
-      ...state,
-      listening: false,
-      speaking: true,
-      loading: false,
-    });
+    handleState("loading", false);
+    handleState("listening", false);
+    // handleState("msg", "");
   };
 
   useEffect(() => {
@@ -331,7 +374,7 @@ export default function InterviewChat() {
                     </button>
                   )}
 
-                  {state.started && state.speaking && !state.loading && (
+                  {state.started && !state.speaking && !state.loading && (
                     <button onClick={startListening}>
                       Speak
                       <Space p={".3rem"} />
@@ -339,7 +382,7 @@ export default function InterviewChat() {
                     </button>
                   )}
 
-                  {state.started && !state.speaking && (
+                  {state.started && state.listening && (
                     <button onClick={stopListening}>
                       Done Speaking
                       <Space p={".3rem"} />
@@ -347,7 +390,7 @@ export default function InterviewChat() {
                     </button>
                   )}
 
-                  {state.started && !state.loading && state.speaking && (
+                  {state.started && !state.loading && !state.speaking && (
                     <button onClick={nextQuestion}>
                       {next === question?.length - 1 ? "Finish" : "Next"}
                       <Space p={".3rem"} />
@@ -374,9 +417,8 @@ export default function InterviewChat() {
             </div>
 
             <div
-              className={`${
-                prompt?.components?.chatbar ? "chat open" : "chat"
-              }`}
+              className={`${prompt?.components?.chatbar ? "chat open" : "chat"
+                }`}
               ref={chatRef}
             >
               <div className="chat-top">
