@@ -59,7 +59,7 @@ export default function InterviewChat() {
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
       alert("Browser has no Support for Speech Recognition. use Google Chrome");
     }
-
+    window.speechSynthesis.cancel();
 
     const cam = cameraRef.current;
     navigator.mediaDevices
@@ -274,20 +274,22 @@ export default function InterviewChat() {
   };
 
   const analyseTranscript = async () => {
-
+    if (finalTranscript == "" && !state.listening) {
+      handleState("msg", "Speak again, Didn't get you due to Poor network connection");
+    } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
       handleState("loading", true);
       handleState("msg", "Thinking...");
 
       const text = await gptPrompt(`
-                Intervew Role="${filter?.role}"
-                Candidate Name="${filter?.name}"
-                Candidate Response="${finalTranscript}"
-                If you are interviewing me as a recruiter
-                for an organization, give me your response
-                as a recruiter based on the Candidate(me) Response
-                Dont forget to keep it brief and short with your questions.
-              `);
+                  Intervew Role="${filter?.role}"
+                  Candidate Name="${filter?.name}"
+                  Candidate Response="${finalTranscript}"
+                  If you are interviewing me as a recruiter
+                  for an organization, give me your response
+                  as a recruiter based on the Candidate(me) Response
+                  Dont forget to keep it brief and short with your questions.
+                `);
 
       handleState("loading", false);
 
@@ -313,6 +315,9 @@ export default function InterviewChat() {
       } else {
         handleState("msg", "Speak again didnt get you!");
       }
+    }
+
+
   };
 
   useEffect(() => {
@@ -321,11 +326,12 @@ export default function InterviewChat() {
     }
   }, [finalTranscript])
 
+
   const stopListening = () => {
     SpeechRecognition.stopListening();
     handleState("loading", false);
     handleState("listening", false);
-    // handleState("msg", "");
+    handleState("msg", "");
   };
 
   useEffect(() => {
