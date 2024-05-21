@@ -4,7 +4,7 @@ export const speak = async (msg) => {
     var utterance = new SpeechSynthesisUtterance(msg);    
     utterance.text = msg;
     synthesis.speak(utterance);
-    return synthesis;
+    return utterance;
   } else {
     alert("Text-To-Speech unsupported by your browser, use Google Chrome!");
   }
