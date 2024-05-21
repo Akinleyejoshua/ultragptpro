@@ -1,138 +1,153 @@
 "use client";
-
-import { Header } from "@/components/Header";
-import { SideBar } from "@/components/SideBar";
-import { Space } from "@/components/Space";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { setRoleAndName, setHistory } from "@/redux/features/prompt";
+import { Space } from "./Space";
 import { useDispatch, useSelector } from "react-redux";
-import { saveHistory as saveHistoryAPI } from "@/services/history";
-import { AiOutlineArrowRight } from "react-icons/ai";
+import {
+  deleteHistory,
+  clearHistory,
+  setAllHistory,
+  setLoader,
+  toggleSideBar,
+} from "@/redux/features/prompt";
+import { useRouter } from "next/navigation";
+import { AiOutlineClear, AiOutlineDelete, AiOutlineHome } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import { Confirm } from "./Confirm";
+import Logo from "@/src/img/logo.jpg";
+import Image from "next/image";
+import { delHistory, getHistory as getHistoryAPI } from "@/services/history";
 
-export default function Interviewer() {
-  const router = useRouter();
-  const dispatch = useDispatch();
-
-  const [state, setState] = useState({
-    name: "",
-    roleId: "",
-    role: "",
-    id: "",
-    loading: false,
+export const SideBar = () => {
+  const [modal, setModal] = useState(false);
+  const [confirm, setConfirm] = useState({
+    id: null,
+    msg: "",
+    open: false,
+    action: "",
   });
+
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+  const prompt = useSelector((state) => state.prompt);
 
   const history = useSelector((state) => state.prompt.history);
 
-  const setupRoleAndName = () => {
-    setState({
-      ...state,
-      loading: true,
-    })
-
-    const data = {
-      title: `${state.role} Interview for ${state.name}`,
-      path: "/interviewer",
-      name: state.name,
-      role: state.role,
-      role_id: state.roleId,
+  useEffect(() => {
+    if (history) {
+      dispatch(setLoader(true));
+      getHistoryAPI({
+        all: true,
+      }).then((res) => {
+        dispatch(setAllHistory(res.data));
+        dispatch(setLoader(false));
+      });
     }
+  }, []);
 
-    dispatch(setRoleAndName(state));
-    saveHistoryAPI(data).then(res => {
-      dispatch(setHistory(data));
-      setState({
-        ...state,
-        id: res.data._id,
-        loading: false,
-      })
-    })
+  const confirmAction = async () => {
+    const id = confirm.id;
+
+    if (confirm.action === "del") {
+      delHistory({ id }).then(() => {
+        dispatch(deleteHistory(id));
+      });
+    }
+    setConfirm({ open: false });
   };
 
   return (
-    <div className="body interview">
-      <SideBar />
-      <div className="main">
-        <Header section={"Interviewer"} />
-        <main>
-          <h1>Practice Interview Questions</h1>
-          <Space p={".3rem"} />
-          <p className="">
-            In this practive interview questions, you will be interviwed by an
-            A.I recruiter, who will ask you questions based on your role and
-            will evaluate your performance and send to the real recruiting team
-            for review. Gemini is your Virtual A.I interviewer.
-          </p>
-
-          <Space p={"1rem"} />
-          <h2>How to use?</h2>
-          <p>Once the page loads, enable camera and mic,
-            press <b>"start"</b> to begin the session. there is a chat
-            tab where your dialogue is being displayed.
-            press <b>"speak"</b> to begin recording your own personal speech when
-            it's time for you to answer or reply (if your spoke and no text was generated due to
-            poor internet connection press it and speak again until it works)
-            and ones you are done with speaking be silent for a while or press <b>"done speaking"</b>.
-            If in Doubt about a question Gemini asks you press 
-            the <b>"Next"</b> button to proceed to the next question.
-            Make sure you speak carefully and audibly!. Make sure you have been evaluated
-            before you leave the session, the HR team will review your evaluation. Good Luck!!!
-          </p>
-          <Space p={"1rem"} />
-          <small>Your Role?</small>
-          <Space p={".3rem"} />
-          <select
-            onChange={(e) => {
-              const val = e.target.value;
-              val === "Full Stack Developer" &&
-                setState({ ...state, roleId: 0, role: val });
-              val === "Data Scientist" &&
-                setState({ ...state, roleId: 1, role: val });
-            }}
-          >
-            <option></option>
-            <option>Full Stack Developer</option>
-            <option>Data Scientist</option>
-          </select>
-          <Space p={"1rem"} />
-          <small>Your name?</small>
-          <Space p={".3rem"} />
-          <input
-            onChange={(e) =>
-              setState({
-                ...state,
-                name: e.target.value,
-              })
-            }
-            type="text"
-            placeholder="Your name"
-          />
-          {state.loading && <>
-            <Space p={"1rem"} />
-            <div className="please-wait">Please wait, creating session...</div>
-          </>
-          }
-            <Space p={"1rem"} />
-
-          {(state.name !== "" && state.role !== "") && (
-            (state.id == "") ? (
-              <button className="start" onClick={setupRoleAndName}>
-                Next
-                <Space p={".3rem"} />
-                <AiOutlineArrowRight />
-              </button>
-            ) : <button className="start" onClick={() => router.push(`/interviewer/chat/${state.id}`)}>
-              Start Session
-              <Space p={".3rem"} />
-              <AiOutlineArrowRight />
+    <section
+      className={`${prompt?.components?.sidebar ? "sidebar open" : "sidebar"}`}
+    >
+      {confirm.open === true && (
+        <Confirm
+          msg={confirm.msg}
+          onNo={() => setConfirm({ open: false })}
+          onYes={confirmAction}
+        />
+      )}
+      <div className="top">
+        <div className="top-2">
+          <Image src={Logo} className="logo" alt="" height={100} width={100} />
+          <h1>
+            <a href="/">Ultra GPT</a>
+            <button
+              onClick={() => dispatch(toggleSideBar(false))}
+              className="close-btn"
+            >
+              &times;
             </button>
-          )
+          </h1>
+        </div>
+        <Space p=".3rem" />
+        <small>Chat History</small>
+        <Space p=".3rem" />
 
-          }
-          <Space p={"1rem"} />
-
-        </main>
+        <div className="actions">
+          <Space p=".0rem" />
+          {prompt.loading ? (
+            <div className="spin"></div>
+          ) : history?.length === 0 ? (
+            <p className="red">No History</p>
+          ) : (
+            history?.map((item, i) => {
+              return (
+                <div
+                  title={`${item?.evaluation}`}
+                  className="item"
+                  key={i}
+                  id={item?._id}
+                >
+                  <h3>{i + 1}</h3>
+                  <Space p={".3rem"} />
+                  <div className="data">
+                    <p
+                      onClick={() => {
+                        dispatch(toggleSideBar(false));
+                        router.push(`${item?.path}/chat/${item?._id}`);
+                      }}
+                      className="dim"
+                    >
+                      {item?.title}
+                    </p>
+                    <Space p={".3rem"} />
+                    <AiOutlineDelete
+                      className="icon red"
+                      onClick={() =>
+                        setConfirm({
+                          ...confirm,
+                          open: true,
+                          id: item?._id,
+                          msg: "Delete the chat?",
+                          action: "del",
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
-    </div>
+
+      <div className="bottom">
+        <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
+          <AiOutlineClear
+            className="icon blue"
+            onClick={() => {
+              delHistory({ all: true }).then(() => {
+                dispatch(clearHistory());
+              });
+            }}
+          />
+          <Space p=".3rem" />
+          <AiOutlineHome className="icon" onClick={() => router.push("/")} />
+        </div>
+        <Space p=".3rem" />
+
+        <small>Joshua Akinleye (Gemini Pro Vision)</small>
+      </div>
+    </section>
   );
-}
+};
