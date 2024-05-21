@@ -318,9 +318,6 @@ export default function InterviewChat() {
   useEffect(() => {
     if (!listening && state.started && transcript != "") {
       analyseTranscript();
-    } else if (state.started && transcript == "" && !listening) {
-      handleState("loading", false);
-      handleState("msg", "Speak again, Didn't get you due to Poor network connection");
     }
   }, [listening])
 
