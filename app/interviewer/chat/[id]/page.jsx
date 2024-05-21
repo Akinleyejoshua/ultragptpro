@@ -48,6 +48,7 @@ export default function InterviewChat() {
 
 
   const {
+    transcript,
     finalTranscript,
     resetTranscript,
     listening,
@@ -274,12 +275,6 @@ export default function InterviewChat() {
 
   const analyseTranscript = async () => {
 
-    if (finalTranscript === "") {
-      handleState("loading", false);
-      !state.speaking && handleState("msg", "Speak again, Didn't get you due to Poor network connection");
-      resetTranscript();
-
-    } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
       handleState("loading", true);
       handleState("msg", "Thinking...");
@@ -318,14 +313,16 @@ export default function InterviewChat() {
       } else {
         handleState("msg", "Speak again didnt get you!");
       }
-    }
   };
 
   useEffect(() => {
-    if (!listening && state.started) {
+    if (!listening && state.started && transcript != "") {
       analyseTranscript();
+    } else if (state.started && transcript == "" && !listening) {
+      handleState("loading", false);
+      handleState("msg", "Speak again, Didn't get you due to Poor network connection");
     }
-  }, [finalTranscript])
+  }, [listening])
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
@@ -346,7 +343,7 @@ export default function InterviewChat() {
     if (domNode) {
       domNode.scrollTop = domNode.scollHeight;
       domNode.addEventListener("DOMNodeInserted", (event) => {
-        event.target.scrollIntoView({ behavior: "smooth", block: "start" });
+        event.target?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
   }, []);
