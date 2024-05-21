@@ -323,7 +323,6 @@ export default function InterviewChat() {
   };
 
   useEffect(() => {
-    console.log(finalTranscript)
     if (finalTranscript !== "" && state.started && !listening) {
       analyseTranscript();
     }
