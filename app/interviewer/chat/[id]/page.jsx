@@ -193,6 +193,7 @@ export default function InterviewChat() {
         listening: false,
         speaking: true,
         msg: "Speaking...",
+        completed: false,
       });
       setNext(0);
       setConvoText("");
