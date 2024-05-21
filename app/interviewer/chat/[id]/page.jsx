@@ -289,6 +289,8 @@ export default function InterviewChat() {
                   for an organization, give me your response
                   as a recruiter based on the Candidate(me) Response
                   Dont forget to keep it brief and short with your questions.
+                  remember not matter what candidate response i give, you
+                  are the one still inteviewing me, so keep interviewing me
                 `);
 
       handleState("loading", false);
@@ -323,6 +325,8 @@ export default function InterviewChat() {
   useEffect(() => {
     if (!listening && state.started && finalTranscript != "") {
       analyseTranscript();
+    } else {
+      resetTranscript();
     }
   }, [finalTranscript])
 
@@ -346,7 +350,7 @@ export default function InterviewChat() {
     if (domNode) {
       domNode.scrollTop = domNode.scollHeight;
       domNode.addEventListener("DOMNodeInserted", (event) => {
-        event.target?.scrollIntoView({ behavior: "smooth", block: "start" });
+        event.target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
   }, []);
