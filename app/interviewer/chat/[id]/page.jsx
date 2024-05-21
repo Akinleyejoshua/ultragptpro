@@ -276,7 +276,7 @@ export default function InterviewChat() {
 
     if (finalTranscript === "") {
       handleState("loading", false);
-      handleState("msg", "Speak again, Didn't get you due to Poor network connection");
+      !state.speaking && handleState("msg", "Speak again, Didn't get you due to Poor network connection");
       resetTranscript();
 
     } else {
@@ -325,7 +325,7 @@ export default function InterviewChat() {
     if (!listening && state.started) {
       analyseTranscript();
     }
-  }, [listening])
+  }, [finalTranscript])
 
   const stopListening = () => {
     SpeechRecognition.stopListening();
