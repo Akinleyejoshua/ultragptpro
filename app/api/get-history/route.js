@@ -8,7 +8,7 @@ export async function POST(req) {
   const { id, all } = await req.json();
   if (all) {
     const histories = await History.find().lean();
-    const chats = await Chats.find({ history_id: histories[0]._id }).lean();
+    const chats = await Chats.find().lean();
     const data = [];
 
     histories.forEach((item, i) => {
