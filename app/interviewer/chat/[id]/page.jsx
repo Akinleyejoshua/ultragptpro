@@ -15,7 +15,7 @@ import {
 import { CiMicrophoneOn, CiMicrophoneOff } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { speak } from "@/utils/speech";
+import { speak } from "@/utils/text-to-speech";
 import { speechToText } from "@/utils/speech-to-text";
 import { prompt as gptPrompt } from "@/utils/gemini";
 import { setChats, toggleChatBar } from "@/redux/features/prompt";
@@ -93,19 +93,19 @@ export default function InterviewChat() {
 
   const questions = interviewer.questions;
   const filter = history?.filter((item) => item?._id == id)[0];
-
-  const question = questions[filter?.role_id]?.questions;
+  const question = questions;
 
   const saveChat = (data) => {
     speak(data).then((data) => {
       data.onend = () => {
         setState({
           ...state,
-          started: true,
+          started: false,
           listening: false,
           speaking: false,
           msg: "",
           loading: false,
+          completed: true,
         });
       };
     });
@@ -198,8 +198,8 @@ export default function InterviewChat() {
       const intro = `So ${filter?.name}, my name is Gemini
         and am your Virtual ${filter?.role}recruiter
         i will be asking you questions 
-        based on your role. You reply
-        by speaking concisely,
+        based on your role and You should reply
+        by speaking concisely
         you are welcome, So
       `;
       setChat((prev) => [...prev, { question: intro }]);
@@ -222,32 +222,30 @@ export default function InterviewChat() {
   };
 
   const nextQuestion = () => {
-    if (chat?.length !== question?.length + 1) {
-      if (question[next + 1] !== undefined) {
-        setNext(next + 1);
-        setState({
-          ...state,
-          started: true,
-          listening: false,
-          speaking: true,
-          msg: "Speaking...",
-          loading: false,
-        });
-        speak(question[next + 1]).then((data) => {
-          data.onend = () => {
-            setState({
-              ...state,
-              started: true,
-              listening: false,
-              speaking: false,
-              msg: "",
-              loading: false,
-            });
-          };
-        });
-        setChat((prev) => [...prev, { question: question[next + 1] }]);
-        processTranscript();
-      }
+    if (question[next + 1] !== undefined) {
+      setNext(next + 1);
+      setState({
+        ...state,
+        started: true,
+        listening: false,
+        speaking: true,
+        msg: "Speaking...",
+        loading: false,
+      });
+      speak(question[next + 1]).then((data) => {
+        data.onend = () => {
+          setState({
+            ...state,
+            started: true,
+            listening: false,
+            speaking: false,
+            msg: "",
+            loading: false,
+          });
+        };
+      });
+      setChat((prev) => [...prev, { question: question[next + 1] }]);
+      processTranscript();
     }
 
     if (next === question?.length - 1) {
@@ -280,15 +278,18 @@ export default function InterviewChat() {
       handleState("msg", "Thinking...");
 
       const text = await gptPrompt(`
+                  Previouse Question="${JSON.stringify(chat[chat.length - 1])}"
                   Intervew Role="${filter?.role}"
                   Candidate Name="${filter?.name}"
                   Candidate Response="${finalTranscript}"
                   If you are interviewing me as a recruiter
-                  for an organization, give me your response
-                  as a recruiter based on the Candidate(me) Response
+                  for an organization, give me your reply
+                  based on the Candidate(me) Response and Previouse Question
                   Dont forget to keep it brief and short with your questions.
                   remember not matter what candidate response i give, you
-                  are the one still inteviewing me, so keep interviewing me
+                  are the one still inteviewing me, so keep
+                  interviewing me by analysing the Previouse Question. 
+                  do not answer the question for the candidate
                 `);
 
       handleState("loading", false);
@@ -311,7 +312,6 @@ export default function InterviewChat() {
   };
 
   useEffect(() => {
-    console.log(finalTranscript)
     if (!state.listening && finalTranscript !== "" && state.started) {
       analyseTranscript();
     }
@@ -339,7 +339,7 @@ export default function InterviewChat() {
         event.target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
-  }, []);
+  }, [chatRef]);
 
   return (
     <div className="body interview-chat">
