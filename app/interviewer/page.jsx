@@ -22,7 +22,7 @@ export default function Interviewer() {
     loading: false,
   });
 
-  const history = useSelector((state) => state.prompt.history);
+  const interviewer = useSelector((state) => state.prompt.interviewer);
 
   const setupRoleAndName = () => {
     setState({
@@ -73,7 +73,7 @@ export default function Interviewer() {
             it's time for you to answer or reply (if you spoke and no text was generated due to
             poor internet connection press it and speak again until it works)
             and ones you are done with speaking then press <b>"done speaking"</b>.
-            If in Doubt about a question Gemini asks you press 
+            If in Doubt about a question Gemini asks you press
             the <b>"Next"</b> button to proceed to the next question.
             Make sure you speak carefully and audibly!. Make sure you have been evaluated
             before you leave the session, the HR team will review your evaluation. Good Luck!!!
@@ -84,15 +84,18 @@ export default function Interviewer() {
           <select
             onChange={(e) => {
               const val = e.target.value;
-              val === "Full Stack Developer" &&
-                setState({ ...state, roleId: 0, role: val });
-              val === "Data Scientist" &&
-                setState({ ...state, roleId: 1, role: val });
+              const id = e.target.id;
+                setState({ ...state, roleId: id, role: val });
             }}
           >
             <option></option>
-            <option>Full Stack Developer</option>
-            <option>Data Scientist</option>
+            {
+              interviewer?.roles?.map((item) => (
+                <option key={item.id} id={item.id}>{item.role}</option>
+              ))
+            }
+        
+
           </select>
           <Space p={"1rem"} />
           <small>Your name?</small>
@@ -112,7 +115,7 @@ export default function Interviewer() {
             <div className="please-wait">Please wait, creating session...</div>
           </>
           }
-            <Space p={"1rem"} />
+          <Space p={"1rem"} />
 
           {(state.name !== "" && state.role !== "") && (
             (state.id == "") ? (
