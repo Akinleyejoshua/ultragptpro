@@ -4,8 +4,8 @@ const settings = {
 
 	// baseURL: 'https://llm-kbg2.onrender.com',
 	// baseURL: 'https://ultragptpro.vercel.app/api',
-	// baseURL: 'https://ultragpt-pro.vercel.app/api',
-	baseURL: 'http://localhost:3000/api',
+	baseURL: 'https://ultragpt-pro.vercel.app/api',
+	// baseURL: 'http://localhost:3000/api',
 	headers: {
 		Accept: 'application/json,text/plain,*/*',
 		'Content-Type': 'application/json',
