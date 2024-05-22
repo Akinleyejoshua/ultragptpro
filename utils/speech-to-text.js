@@ -5,6 +5,7 @@ export const speechToText = () => {
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         // recognition.interimResults = true;
+        // recognition.lang = 'en-US';
         return recognition;
     } catch (err){
         

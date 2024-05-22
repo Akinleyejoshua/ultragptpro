@@ -12,25 +12,111 @@ const initialState = {
   history: [],
   chats: [],
   interviewer: {
-    roleId: 0,
+    roleId: null,
     name: "",
     role: "",
-    questions: {
-      0: {
-        role: "Full Stack Developer",
-        questions: [
-          "Tell me about yourself?",
-          "Thank you for your time, i will send your data to the recruiting team and they will get back to you, good luck!",
-        ],
+    roles: [
+      {
+        id: 0,
+        role: "Frontend Developer",
       },
-      1: {
+      {
+        id: 1,
+        role: "Backend Developer",
+      },
+      {
+        id: 2,
+        role: "Fullstack Developer",
+      },
+      {
+        id: 3,
         role: "Data Scientist",
-        questions: [
-          "Tell me about yourself?",
-          "Thank you for your time, i will send your data to the recruiting team and they will get back to you, good luck!",
-        ],
       },
-    },
+      {
+        id: 4,
+        role: "Data Analyst",
+      },
+      {
+        id: 5,
+        role: "Machine Learning Engineer",
+      },
+      {
+        id: 6,
+        role: "Blockchain Developer",
+      },
+      {
+        id: 7,
+        role: "Cyber Security Analyst",
+      },
+      {
+        id: 8,
+        role: "Cyber Security Engineer",
+      },
+      {
+        id: 9,
+        role: "Cyber Security Specialist",
+      },
+      {
+        id: 10,
+        role: "C.T.O",
+      },
+      {
+        id: 11,
+        role: "C.E.O",
+      },
+      {
+        id: 12,
+        role: "Human Resource Manager (H.R)",
+      },
+      {
+        id: 13,
+        role: "Product Designer & UI/UX",
+      },
+      {
+        id: 14,
+        role: "Accountant",
+      },
+      {
+        id: 13,
+        role: "Web3 Bug Hunter",
+      },
+      {
+        id: 14,
+        role: "Data Engineer",
+      },
+      {
+        id: 15,
+        role: "Cloud Architect",
+      },
+      {
+        id: 16,
+        role: "Machine Learning Operations (MLOps)",
+      },
+      {
+        id: 17,
+        role: "Developer Operations (DevOps)",
+      },
+      {
+        id: 18,
+        role: "Business Developer",
+      },
+      {
+        id: 19,
+        role: "Graphics Designer",
+      },
+      {
+        id: 20,
+        role: "Social Media Manager",
+      },
+
+    ],
+    questions: [
+      "Tell me about yourself?",
+      "What are your Salary Expectations?",
+      "What is your work notice? explain",
+      // "",
+      "Thank you for your time, i will send your data to the recruiting team and they will get back to you, good luck!",
+    ],
   },
 };
 
