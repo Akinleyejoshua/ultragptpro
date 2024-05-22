@@ -16,7 +16,7 @@ export async function prompt(prompt) {
         const result = await chat.sendMessage(msg);
         const response = await result.response;
         const text = response.text();
-        return text.replace(/\*/g, '') || "";
+        return text.replace(/\*/g, '').replace(/[|]/g, '').replace(/-/g, '') || "";
     } catch (err){
 
     }
