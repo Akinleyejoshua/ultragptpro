@@ -226,13 +226,15 @@ main {
   font-size: 13px;
   max-width: 20rem;
   display: flex;
+  justify-content: space-between;
+
 }
 
 .sidebar .item .data{
   display: flex;
   place-items: center;
   justify-content: space-between;
-
+  width: 100%;
 }
 
 .actions .item:hover,
