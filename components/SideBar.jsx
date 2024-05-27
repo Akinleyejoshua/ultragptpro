@@ -133,13 +133,7 @@ export const SideBar = () => {
 
       <div className="bottom">
         <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
-          <AiOutlineClear
-            className="icon blue"
-            onClick={() => {
-              
-            }}
-          />
-          <Space p=".3rem" />
+          
           <AiOutlineHome className="icon" onClick={() => router.push("/")} />
         </div>
         <Space p=".3rem" />
