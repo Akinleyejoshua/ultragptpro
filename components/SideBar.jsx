@@ -136,9 +136,7 @@ export const SideBar = () => {
           <AiOutlineClear
             className="icon blue"
             onClick={() => {
-              delHistory({ all: true }).then(() => {
-                dispatch(clearHistory());
-              });
+              
             }}
           />
           <Space p=".3rem" />
