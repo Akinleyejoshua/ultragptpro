@@ -232,7 +232,7 @@ main {
 
 .sidebar .item .data{
   display: flex;
-  place-items: center;
+  /* place-items: center; */
   justify-content: space-between;
   width: 100%;
 }
