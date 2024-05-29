@@ -12,7 +12,7 @@ const initialState = {
   history: [],
   chats: [],
   interviewer: {
-    roleId: null,
+    role_id: null,
     name: "",
     role: "",
     roles: [
@@ -108,7 +108,6 @@ const initialState = {
         id: 20,
         role: "Social Media Manager",
       },
-
     ],
     questions: [
       "Tell me about yourself?",
@@ -176,10 +175,16 @@ export const promptSlice = createSlice({
 
     setRoleAndName: (state, action) => {
       const val = action.payload;
-      state.interviewer.roleId = val.roleId;
+      state.interviewer.role_id = val.roleId;
       state.interviewer.name = val.name;
       state.interviewer.role = val.role;
     },
+
+    clearRoleAndName: (state, action) => {
+      state.interviewer.role = "";
+      state.interviewer.role_id = "";
+      state.interviewer.name = "";
+    }
   },
 });
 
@@ -197,5 +202,6 @@ export const {
   setChat,
   toggleSideBar,
   toggleChatBar,
+  clearRoleAndName,
 } = promptSlice.actions;
 export const promptReducer = promptSlice.reducer;
