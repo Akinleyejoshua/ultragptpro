@@ -3,21 +3,20 @@ import { Space } from "./Space";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteHistory,
-  clearHistory,
   setAllHistory,
   setLoader,
   toggleSideBar,
 } from "@/redux/features/prompt";
 import { useRouter } from "next/navigation";
-import { AiOutlineClear, AiOutlineDelete, AiOutlineHome } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineHome } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { Confirm } from "./Confirm";
 import Logo from "@/src/img/logo.jpg";
 import Image from "next/image";
 import { delHistory, getHistory as getHistoryAPI } from "@/services/history";
+import { CiChat1 } from "react-icons/ci";
 
 export const SideBar = () => {
-  const [modal, setModal] = useState(false);
   const [confirm, setConfirm] = useState({
     id: null,
     msg: "",
@@ -33,6 +32,8 @@ export const SideBar = () => {
   const history = useSelector((state) => state.prompt.history);
 
   useEffect(() => {
+    window.speechSynthesis.cancel();
+
     if (history) {
       dispatch(setLoader(true));
       getHistoryAPI({
@@ -98,7 +99,7 @@ export const SideBar = () => {
                   key={i}
                   id={item?._id}
                 >
-                  <h3>{i + 1}</h3>
+                  <CiChat1 className="icon" />
                   <Space p={".3rem"} />
                   <div className="data">
                     <p
@@ -133,7 +134,6 @@ export const SideBar = () => {
 
       <div className="bottom">
         <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
-          
           <AiOutlineHome className="icon" onClick={() => router.push("/")} />
         </div>
         <Space p=".3rem" />
