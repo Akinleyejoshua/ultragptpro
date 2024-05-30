@@ -6,7 +6,7 @@ import Image from "next/image";
 import Logo from "@/src/img/avater-1.jpg";
 import Logo2 from "@/src/img/avater-2.jpg";
 import { Space } from "@/components/Space";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   AiOutlineArrowRight,
   AiOutlineComment,
@@ -16,7 +16,6 @@ import { CiMicrophoneOn, CiMicrophoneOff } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { speak } from "@/utils/text-to-speech";
-import { speechToText } from "@/utils/speech-to-text";
 import { prompt as gptPrompt } from "@/utils/gemini";
 import { setChats, toggleChatBar } from "@/redux/features/prompt";
 import {
@@ -39,21 +38,12 @@ export default function InterviewChat() {
   const [chat, setChat] = useState([]);
   const [chatLoading, setChatLoading] = useState(true);
 
-  const commands = [
-    // {
-    //   command: "reset",
-    //   callback: () => resetTranscript(),
-    // },
-  ];
-
-  const { transcript, finalTranscript, resetTranscript, listening } =
-    useSpeechRecognition({ commands });
+  const { finalTranscript, resetTranscript } = useSpeechRecognition({});
 
   useEffect(() => {
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
       alert("Browser has no Support for Speech Recognition. use Google Chrome");
     }
-    window.speechSynthesis.cancel();
 
     const cam = cameraRef.current;
     navigator.mediaDevices
@@ -63,10 +53,9 @@ export default function InterviewChat() {
       })
       .then((stream) => {
         cam.srcObject = stream;
-        // cam?.play();
         return stream;
       })
-      .catch((err) => {
+      .catch(() => {
         alert(`
         Failed to load Camera. Hint: Check if Another 
         app is using your camera or check for camera input or
@@ -121,7 +110,7 @@ export default function InterviewChat() {
   const getChats = () => {
     getChatsAPI({ history_id: id }).then((res) => {
       dispatch(setChats(res.data?.chats || []));
-      setChat((prev) => res.data?.chats || []);
+      setChat(() => res.data?.chats || []);
       setChatLoading(false);
     });
   };
@@ -315,7 +304,7 @@ export default function InterviewChat() {
     if (!state.listening && finalTranscript !== "" && state.started) {
       analyseTranscript();
     }
-  }, [finalTranscript, state.listening])
+  }, [finalTranscript, state.listening]);
 
   const stopListening = async () => {
     await SpeechRecognition.stopListening();
@@ -415,7 +404,7 @@ export default function InterviewChat() {
               ref={chatRef}
             >
               <div className="chat-top">
-                <h2 className="blue">Chat</h2>
+                <h2 className="blue">{chat.length} Chat</h2>
                 <button
                   onClick={() => dispatch(toggleChatBar(false))}
                   className="close-bar"
