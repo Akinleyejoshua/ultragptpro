@@ -464,6 +464,8 @@ export default function InterviewChat() {
                           </div>
                         )}
 
+                        </br>
+                        
                         {item?.msg && (
                           <div className="">
                             <div className="data">
