@@ -269,11 +269,7 @@ export default function InterviewChat() {
       );
     } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
-      saveChatsAPI({
-      history_id: id,
-      chats: [...chat, { answer: finalTranscript }],
-      evaluation: "",
-    })
+      
       handleState("loading", true);
       handleState("msg", "Thinking...");
 
@@ -309,7 +305,10 @@ export default function InterviewChat() {
       setChat((prev) => [...prev, { msg: text }]);
       saveChatsAPI({
       history_id: id,
-      chats: [...chat, { msg: text }],
+      chats: [...chat, {
+        answer: finalTranscript,
+        msg: text 
+      }],
       evaluation: "",
     })
       resetTranscript();
