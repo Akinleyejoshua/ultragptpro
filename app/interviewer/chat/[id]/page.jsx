@@ -234,6 +234,11 @@ export default function InterviewChat() {
         };
       });
       setChat((prev) => [...prev, { question: question[next + 1] }]);
+      saveChatsAPI({
+      history_id: id,
+      chats: [...chat, { msg: question[next + 1] }],
+      evaluation: "",
+    })
       processTranscript();
     }
 
@@ -296,6 +301,11 @@ export default function InterviewChat() {
         };
       });
       setChat((prev) => [...prev, { msg: text }]);
+      saveChatsAPI({
+      history_id: id,
+      chats: [...chat, { msg: text }],
+      evaluation: "",
+    })
       resetTranscript();
     }
   };
