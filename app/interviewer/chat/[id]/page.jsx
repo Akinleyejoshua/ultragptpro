@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Header } from "@/components/Header";
@@ -268,6 +269,11 @@ export default function InterviewChat() {
       );
     } else {
       setChat((prev) => [...prev, { answer: finalTranscript }]);
+      saveChatsAPI({
+      history_id: id,
+      chats: [...chat, { answer: finalTranscript }],
+      evaluation: "",
+    })
       handleState("loading", true);
       handleState("msg", "Thinking...");
 
