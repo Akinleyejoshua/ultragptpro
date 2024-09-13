@@ -113,6 +113,7 @@ export const SideBar = () => {
                     </p>
                     <Space p={".3rem"} />
                     <AiOutlineDelete
+                      disabled={true}
                       className="icon red"
                       onClick={() =>
                         setConfirm({
