@@ -112,19 +112,7 @@ export const SideBar = () => {
                       {item?.title}
                     </p>
                     <Space p={".3rem"} />
-                    <AiOutlineDelete
-                      disabled={true}
-                      className="icon red"
-                      onClick={() =>
-                        setConfirm({
-                          ...confirm,
-                          open: true,
-                          id: item?._id,
-                          msg: "Delete the chat?",
-                          action: "del",
-                        })
-                      }
-                    />
+                    
                   </div>
                 </div>
               );
@@ -137,7 +125,7 @@ export const SideBar = () => {
         <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
           <AiOutlineHome className="icon" onClick={() => router.push("/")} />
         </div>
-        <Space p=".3rem" />
+        
 
         <small>Joshua Akinleye (Gemini Pro Vision)</small>
       </div>
