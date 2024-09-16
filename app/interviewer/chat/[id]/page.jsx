@@ -373,7 +373,7 @@ export default function InterviewChat() {
 
                   {state.started && !state.speaking && !state.loading && (
                     <button onClick={startListening}>
-                      Speak
+                      Un Mute
                       <Space p={".3rem"} />
                       <CiMicrophoneOn className="red" />
                     </button>
@@ -381,7 +381,7 @@ export default function InterviewChat() {
 
                   {state.started && state.listening && (
                     <button onClick={stopListening}>
-                      Done Speaking
+                      Mute
                       <Space p={".3rem"} />
                       <CiMicrophoneOff className="red" />
                     </button>
