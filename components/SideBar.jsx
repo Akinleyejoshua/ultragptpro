@@ -109,7 +109,7 @@ export const SideBar = () => {
                       }}
                       className="dim"
                     >
-                      {item?.title}
+                    
                     </p>
                     <Space p={".3rem"} />
                     
