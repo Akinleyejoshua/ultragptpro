@@ -108,6 +108,14 @@ const initialState = {
         id: 20,
         role: "Social Media Manager",
       },
+      {
+        id: 21,
+        role: "Video Grapher",
+      },
+      {
+        id: 22,
+        role: "Realtor",
+      }
     ],
     questions: [
       "Tell me about yourself?",
