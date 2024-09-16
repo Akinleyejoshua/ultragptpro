@@ -338,7 +338,7 @@ export default function InterviewChat() {
     const domNode = chatRef.current;
 
     if (domNode) {
-      domNode.scrollTop = domNode.scollHeight;
+      domNode.scrollTop = domNode.scrollHeight;
       domNode.addEventListener("DOMNodeInserted", (event) => {
         event.target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
