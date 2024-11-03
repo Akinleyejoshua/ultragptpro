@@ -336,9 +336,10 @@ export default function InterviewChat() {
 
   useEffect(() => {
     const domNode = chatRef.current;
+    
 
     if (domNode) {
-      domNode.scrollTop = domNode.scrollHeight;
+      domNode.scrollTo = domNode.scrollHeight;
       domNode.addEventListener("DOMNodeInserted", (event) => {
         event.target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
