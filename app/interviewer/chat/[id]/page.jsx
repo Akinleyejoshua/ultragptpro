@@ -341,12 +341,12 @@ export default function InterviewChat() {
     if (domNode) {
         domNode.scrollTo({ behavior: 'smooth', top: domNode.scrollHeight });
 
-      // domNode.scrollTo = domNode.scrollHeight;
-      // domNode.addEventListener("DOMNodeInserted", (event) => {
-      //   event.target.scrollIntoView({ behavior: "smooth", block: "start" });
-      // });
+      domNode.scrollTo = domNode.scrollHeight;
+      domNode.addEventListener("DOMNodeInserted", (event) => {
+        event.target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
     }
-  }, [chatRef]);
+  }, [chatRef.current]);
 
   return (
     <div className="body interview-chat">
