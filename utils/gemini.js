@@ -1,12 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 // alert(process.env.API_KEY)
-const API_KEY="AIzaSyCqbZHBwQilte6ktDaa6F6GyM7SvvPFyMQ";
+const API_KEY = "AIzaSyAKjtqaEo1h9c7T5FT0fFcSaOovvlBnOVc";
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 export async function prompt(prompt) {
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
   
     const chat = model.startChat();
   
