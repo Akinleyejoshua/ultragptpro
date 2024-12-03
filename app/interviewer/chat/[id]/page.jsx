@@ -409,7 +409,7 @@ export default function InterviewChat() {
                 onClick={() => dispatch(toggleChatBar(true))}
                 className="toggle-chat"
               >
-                Chat Section
+                ({chat.length}) Chats
                 <Space p={".3rem"} />
                 <AiOutlineComment className="icon" />
               </button>
