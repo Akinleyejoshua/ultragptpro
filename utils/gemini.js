@@ -18,7 +18,7 @@ export async function prompt(prompt) {
         const text = response.text();
         return text.replace(/\*/g, '').replace(/[|]/g, '').replace(/-/g, '') || "";
     } catch (err){
-
+        console.log(err)
     }
   
     
