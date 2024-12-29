@@ -12,10 +12,11 @@ export async function POST(req) {
     const data = [];
 
     histories.forEach((item, i) => {
+      const findChats = chats.find(x => x.history_id == item?._id)
       data.push({
         ...item,
-        evaluation: chats[i]?.evaluation,
-        chats: chats.length
+        evaluation: findChats?.evaluation,
+        chats: findChats?.chats?.length
       });
     });
 
