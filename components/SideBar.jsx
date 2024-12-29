@@ -8,7 +8,7 @@ import {
   toggleSideBar,
 } from "@/redux/features/prompt";
 import { useRouter } from "next/navigation";
-import { AiOutlineDelete, AiOutlineHome } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineHome, AiOutlineYoutube } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { Confirm } from "./Confirm";
 import Logo from "@/src/img/logo.jpg";
@@ -122,11 +122,15 @@ export const SideBar = () => {
       </div>
 
       <div className="bottom">
-        <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
-          <AiOutlineHome className="icon" onClick={() => router.push("/")} />
-        </div>
-        
+         <div className="row">
+          <div className="row" onClick={() => dispatch(toggleSideBar(false))}>
+            <AiOutlineHome className="icon" onClick={() => router.push("/")} />
+          </div>
+          <Space p=".3rem" />
 
+          <a className="row justify-center" href="https://youtu.be/nMqEkBG3qpw"><AiOutlineYoutube className="icon" />Video Demo</a>
+        </div>
+       
         <small>Joshua Akinleye (Gemini Pro Vision)</small>
       </div>
     </section>
