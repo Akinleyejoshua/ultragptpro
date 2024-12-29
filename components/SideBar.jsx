@@ -130,6 +130,7 @@ export const SideBar = () => {
 
           <a className="row justify-center" href="https://youtu.be/nMqEkBG3qpw"><AiOutlineYoutube className="icon" />Video Demo</a>
         </div>
+          <Space p=".3rem" />
        
         <small>Joshua Akinleye (Gemini Pro Vision)</small>
       </div>
