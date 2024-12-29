@@ -1,5 +1,6 @@
 
 "use client";
+alert("Am sorry your interviewer is not available: Gemini API RATE LIMIT EXECEEDED")
 
 import { Header } from "@/components/Header";
 import { SideBar } from "@/components/SideBar";
