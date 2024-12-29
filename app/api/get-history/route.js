@@ -14,7 +14,8 @@ export async function POST(req) {
     histories.forEach((item, i) => {
       data.push({
         ...item,
-        evaluation: chats[i]?.evaluation 
+        evaluation: chats[i]?.evaluation,
+        chats: chats.length
       });
     });
 
