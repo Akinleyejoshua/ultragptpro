@@ -94,7 +94,7 @@ export const SideBar = () => {
             history?.map((item, i) => {
               return (
                 <div
-                
+                  title={`${item?.evaluation}`}
                   className="item"
                   key={i}
                   id={item?._id}
