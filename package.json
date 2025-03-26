@@ -22,7 +22,7 @@
     "react-speech-recognition": "^3.10.0",
     "regenerator-runtime": "^0.14.1",
     "typewriter-effect": "^2.21.0",
-    "openai"
+    "openai": "4.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
