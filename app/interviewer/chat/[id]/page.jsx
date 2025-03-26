@@ -16,7 +16,7 @@ import { CiMicrophoneOn, CiMicrophoneOff } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { speak } from "@/utils/text-to-speech";
-import { prompt as gptPrompt } from "@/utils/deepseek";
+import { prompt as gptPrompt } from "@/utils/gemini";
 import { setChats, toggleChatBar } from "@/redux/features/prompt";
 import {
   getChats as getChatsAPI,
