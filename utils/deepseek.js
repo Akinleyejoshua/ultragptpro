@@ -5,7 +5,7 @@ const openai = new OpenAI({
   apiKey: "sk-1a4071490a104004ac89cd545b5d75dc",
 });
 
-export async function prompt(text) {
+export const prompt = async (text) => {
   try {
     const completion = await openai.chat.completions.create({
       model: "deepseek-chat",
