@@ -184,7 +184,7 @@ export default function InterviewChat() {
       setConvoText("");
       setChat([]);
 
-      const intro = `So ${filter?.name}, my name is Gemini
+      const intro = `So ${filter?.name}, my name is Lang
         and am your Virtual ${filter?.role}recruiter
         i will be asking you questions 
         based on your role and You should reply
@@ -360,7 +360,7 @@ export default function InterviewChat() {
               <div className="interviewer">
                 <Image src={Logo} alt="" className="male" />
                 <Image src={Logo2} alt="" className="female" />
-                <small className="name">Gemini</small>
+                <small className="name">Lang</small>
               </div>
               <div className="candidate">
                 <video controls={false} ref={cameraRef} autoPlay={true}></video>
@@ -446,7 +446,7 @@ export default function InterviewChat() {
                               <Image src={Logo2} alt="" className="female" />
                               <Space p={".3rem"} />
                               <div className="col">
-                                <h4>Gemini</h4>
+                                <h4>Lang</h4>
                                 <div className="text">
                                   <small>{item?.question}</small>
                                 </div>
@@ -475,7 +475,7 @@ export default function InterviewChat() {
                               <Image src={Logo2} alt="" className="female" />
                               <Space p={".3rem"} />
                               <div className="col">
-                                <h4>Gemini</h4>
+                                <h4>Lang</h4>
                                 <div className="text">
                                   <small>{item?.msg}</small>
                                 </div>
