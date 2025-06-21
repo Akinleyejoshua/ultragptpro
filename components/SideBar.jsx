@@ -132,7 +132,7 @@ export const SideBar = () => {
         </div>
           <Space p=".3rem" />
        
-        <small>Joshua Akinleye (Gemini Pro Vision)</small>
+        <small>(LangChain)</small>
       </div>
     </section>
   );
